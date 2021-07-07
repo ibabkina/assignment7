@@ -21,6 +21,7 @@ import org.hibernate.validator.constraints.Range;
  */
 
 @Entity
+@Table(name = "cd_offerings")
 public class CDOffering {
 	
 //	static int nextId = 1;

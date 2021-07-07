@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CheckingAccountRepository extends JpaRepository<CheckingAccount,Long> {
 
-//	CheckingAccount findById(long id); //placeholder
+	CheckingAccount findById(long id); //placeholder
 }

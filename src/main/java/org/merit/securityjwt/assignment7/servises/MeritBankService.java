@@ -1,4 +1,4 @@
-package org.merit.securityjwt.assignment7.models;
+package org.merit.securityjwt.assignment7.servises;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,6 +12,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import org.merit.securityjwt.assignment7.exceptions.MissingDataException;
+import org.merit.securityjwt.assignment7.exceptions.NotFoundException;
+import org.merit.securityjwt.assignment7.models.AccountHolder;
+import org.merit.securityjwt.assignment7.models.BankAccount;
+import org.merit.securityjwt.assignment7.models.CDAccount;
+import org.merit.securityjwt.assignment7.models.CDOffering;
+import org.merit.securityjwt.assignment7.models.CheckingAccount;
+import org.merit.securityjwt.assignment7.models.SavingsAccount;
+import org.merit.securityjwt.assignment7.repos.AccountHolderRepository;
+import org.merit.securityjwt.assignment7.repos.CDOfferingRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 /**
  * This program creates account holders for a bank  and adds his accounts. It provides information 
  * about an account holder and their accounts.
@@ -19,7 +32,13 @@ import java.util.Scanner;
  * @author Irina Babkina 
  */
 
-public class MeritBank {
+@Service
+public class MeritBankService {
+	
+	@Autowired 
+	AccountHolderRepository accHolderRepository;
+	@Autowired 
+	CDOfferingRepository cdOfferingRepository;
 	
 	private static AccountHolder[] accountHolders = new AccountHolder[0]; 
 	private static CDOffering[] cdOfferings; 
@@ -237,36 +256,59 @@ public class MeritBank {
 //		return true;	
 //	}
 		
+//	/**
+//	 * @param accountHolder
+//	 */
+//	Code before refactoring into a Service class:
+//	public static void addAccountHolder(AccountHolder accountHolder) {
+//		AccountHolder[] temp = new AccountHolder[accountHolders.length + 1]; 
+//		for(int i = 0; i < accountHolders.length; i++) {
+//			temp[i] = accountHolders[i];
+//		}
+//		temp[temp.length - 1] = accountHolder;
+//		accountHolders = temp;
+
 	/**
 	 * @param accountHolder
 	 */
-	public static void addAccountHolder(AccountHolder accountHolder) {
-		AccountHolder[] temp = new AccountHolder[accountHolders.length + 1]; 
-		for(int i = 0; i < accountHolders.length; i++) {
-			temp[i] = accountHolders[i];
-		}
-		temp[temp.length - 1] = accountHolder;
-		accountHolders = temp;
+	public void addAccountHolder(AccountHolder accountHolder) {
+		accHolderRepository.save(accountHolder); // id only generates when saved to DB
+		long accHolderId = accountHolder.getId(); // how to handle if .getId() == null? Can it be null or 0?
+		accountHolder.getAccountHolderContactDetails().setAccountHolderId(accHolderId);
+		accHolderRepository.save(accountHolder); 
 	}
 	
+//	/**
+//	 * @return the accountHolder[] 
+//	 */
+//	public static AccountHolder[]getAccountHolders() { return accountHolders; }
+	
+	
 	/**
-	 * @return the accountHolder[] 
+	 * @return the accountHolders 
 	 */
-	public static AccountHolder[]getAccountHolders() { return accountHolders; }
+	public List<AccountHolder> getAccountHolders(){ return accHolderRepository.findAll(); }
 	
 	/**
 	 * @return the accountHolder 
 	 */
-	public static AccountHolder getAccountHolder(long id) {
-		
-		if(getAccountHolders().length <= 0) { return null; }
-    	
-		for(AccountHolder accountHolder: getAccountHolders()) {
-    		if(accountHolder.getId() == id) { return accountHolder; }
-    	}		
-//		throw new NotFoundException("Account Not Found");
-		return null;
-    }
+	public AccountHolder getAccountHolder(long id) { return accHolderRepository.findById(id); }
+	
+//	/**
+//	 * @return the accountHolder 
+//	 */
+//	public static AccountHolder getAccountHolder(long id) {
+//		
+//		if(getAccountHolders().length <= 0) { return null; }
+//    	
+//		for(AccountHolder accountHolder: getAccountHolders()) {
+//    		if(accountHolder.getId() == id) { return accountHolder; }
+//    	}		
+////		throw new NotFoundException("Account Not Found");
+//		return null;
+//    }
+	
+	
 //	public static AccountHolder getAccountHolder(long id) 
 //			throws NotFoundException {
 //		
@@ -318,17 +360,23 @@ public class MeritBank {
 		return secondBest;
 	}
 	
+//	/**
+//	 * @param id
+//	 * @return the CDOffering
+//	 */
+//	public static CDOffering getCDOffering(int id) {
+//		if(cdOfferings == null) { return null;}
+//		for(CDOffering cdOffering : cdOfferings) {
+//			if(cdOffering.getId() == id) { return cdOffering; }
+//		}
+//		return null;
+//	}
+	
 	/**
-	 * @param depositAmount
-	 * @return the secondBestCDOffering
+	 * @param id
+	 * @return the CDOffering
 	 */
-	public static CDOffering getCDOffering(int id) {
-		if(cdOfferings == null) { return null;}
-		for(CDOffering cdOffering : cdOfferings) {
-			if(cdOffering.getId() == id) { return cdOffering; }
-		}
-		return null;
-	}
+	public CDOffering getCDOffering(int id) { return cdOfferingRepository.findById(id); }
 	
 //	public static CDOffering getSecondBestCDOffering(double depositAmount) {
 //		
@@ -352,10 +400,16 @@ public class MeritBank {
 //	      return cdOfferings[cdOfferings.length - 2];
 //	}
 	
+//	/**
+//	 * @return the cdOfferings
+//	 */
+//	public static CDOffering[] getCDOfferings() { return cdOfferings; }
+	
 	/**
 	 * @return the cdOfferings
 	 */
-	public static CDOffering[] getCDOfferings() { return cdOfferings; }
+	public List<CDOffering> getCDOfferings() { return cdOfferingRepository.findAll(); }
+	
 	
 //	/**
 //	 * @return the cdOfferings
@@ -365,20 +419,26 @@ public class MeritBank {
 	/**
 	 * @param cdOfferings the cdOfferings to set
 	 */
-	public static void setCDOfferings(CDOffering[] offerings) { MeritBank.cdOfferings = offerings; }
+	public static void setCDOfferings(CDOffering[] offerings) { MeritBankService.cdOfferings = offerings; }
 	
 	
-	public static CDOffering addCDOffering(CDOffering cdOffering) {
-		if(cdOfferings == null) { cdOfferings = new CDOffering[0]; }
-		CDOffering[] temp = new CDOffering[cdOfferings.length + 1];
-		for (int i = 0 ; i < cdOfferings.length; i++) {
-			temp[i] = cdOfferings[i];
-		}
-		temp[temp.length - 1] = cdOffering;
-		cdOfferings = temp;
-		
-		return cdOffering;
+//	public static CDOffering addCDOffering(CDOffering cdOffering) {
+//		if(cdOfferings == null) { cdOfferings = new CDOffering[0]; }
+//		CDOffering[] temp = new CDOffering[cdOfferings.length + 1];
+//		for (int i = 0 ; i < cdOfferings.length; i++) {
+//			temp[i] = cdOfferings[i];
+//		}
+//		temp[temp.length - 1] = cdOffering;
+//		cdOfferings = temp;
+//		
+//		return cdOffering;
+//	}
+	
+	public CDOffering addCDOffering(CDOffering cdOffering) {
+		return cdOfferingRepository.save(cdOffering);
 	}
+	
+	
 	
 //	/**
 //	 * @param cdOfferings the cdOfferings to set

@@ -39,7 +39,7 @@ public class AccountHolderContactDetails {
 //	@NotBlank @Digits(integer=10, fraction=0)
 	private String phone;
 	
-	private long accountHolderId;
+	private long accountHolderId; // Need this because I don't have AccountHolder object here
 	
 
 //	@OneToOne

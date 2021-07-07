@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CDAccountRepository extends JpaRepository<CDAccount, Long> {
 
-//	CDAccount findById(long id);	// placeholder
+	CDAccount findById(long id);
+	
 }

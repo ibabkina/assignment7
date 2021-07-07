@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SavingsAccountRepository extends JpaRepository<SavingsAccount, Long> {
 	
-//	SavingsAccount findById(long id); // placeholder
+	SavingsAccount findById(long id); // placeholder
 }

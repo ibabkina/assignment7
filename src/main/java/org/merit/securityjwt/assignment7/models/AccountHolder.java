@@ -14,6 +14,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.merit.securityjwt.assignment7.exceptions.ExceedsCombinedBalanceLimitException;
 import org.merit.securityjwt.assignment7.exceptions.ExceedsFraudSuspicionLimitException;
@@ -47,7 +48,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
 	@NotBlank
 	private String lastName;
 	
-//	@NotBlank
+	@NotNull
 	@OneToOne(cascade = CascadeType.ALL) //, mappedBy = "accountHolder")
 	private AccountHolderContactDetails accountHolderContactDetails;	
 /* 

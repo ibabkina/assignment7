@@ -1,6 +1,5 @@
 package org.merit.securityjwt.assignment7.models;
 
-
 /*
  * This AuthenticationRequest is going to define the input argument
  * to my authenticate() method. This is what the user is gonna send 
