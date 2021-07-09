@@ -12,7 +12,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import org.merit.securityjwt.assignment7.exceptions.ExceedsCombinedBalanceLimitException;
+import org.merit.securityjwt.assignment7.exceptions.ExceedsFraudSuspicionLimitException;
 import org.merit.securityjwt.assignment7.exceptions.MissingDataException;
+import org.merit.securityjwt.assignment7.exceptions.NegativeAmountException;
 import org.merit.securityjwt.assignment7.exceptions.NotFoundException;
 import org.merit.securityjwt.assignment7.models.AccountHolder;
 import org.merit.securityjwt.assignment7.models.BankAccount;
@@ -21,7 +24,10 @@ import org.merit.securityjwt.assignment7.models.CDOffering;
 import org.merit.securityjwt.assignment7.models.CheckingAccount;
 import org.merit.securityjwt.assignment7.models.SavingsAccount;
 import org.merit.securityjwt.assignment7.repos.AccountHolderRepository;
+import org.merit.securityjwt.assignment7.repos.CDAccountRepository;
 import org.merit.securityjwt.assignment7.repos.CDOfferingRepository;
+import org.merit.securityjwt.assignment7.repos.CheckingAccountRepository;
+import org.merit.securityjwt.assignment7.repos.SavingsAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,14 +41,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class MeritBankService {
 	
-	@Autowired 
-	AccountHolderRepository accHolderRepository;
-	@Autowired 
-	CDOfferingRepository cdOfferingRepository;
+	@Autowired AccountHolderRepository accHolderRepository;
+	@Autowired CDOfferingRepository cdOfferingRepository;
+	@Autowired CheckingAccountRepository checkingAccountRepository;
+	@Autowired SavingsAccountRepository savingsAccountRepository;
+	@Autowired CDAccountRepository cdAccountRepository;
 	
 	private static AccountHolder[] accountHolders = new AccountHolder[0]; 
 	private static CDOffering[] cdOfferings; 
-//	private static List<CDOffering> cdOfferings = new ArrayList<CDOffering>();
 	private static long nextAccountNumber = 0;
 	private static final double MAX_TRANSACTION_AMOUNT = 1000.00;
 //	private static FraudQueue fraudQueue = new FraudQueue();
@@ -271,11 +277,16 @@ public class MeritBankService {
 	/**
 	 * @param accountHolder
 	 */
-	public void addAccountHolder(AccountHolder accountHolder) {
+	public void addAccountHolder(AccountHolder accountHolder) 
+					throws MissingDataException {
+			
+		if(accountHolder == null || accountHolder.getAccountHolderContactDetails() == null) { 
+				throw new MissingDataException("Some data is missing or in the wrong format"); }
 		accHolderRepository.save(accountHolder); // id only generates when saved to DB
 		long accHolderId = accountHolder.getId(); // how to handle if .getId() == null? Can it be null or 0?
 		accountHolder.getAccountHolderContactDetails().setAccountHolderId(accHolderId);
 		accHolderRepository.save(accountHolder); 
+		// Should this method return accHolderRepository.findById(id); 
 	}
 	
 //	/**
@@ -292,36 +303,11 @@ public class MeritBankService {
 	/**
 	 * @return the accountHolder 
 	 */
-	public AccountHolder getAccountHolder(long id) { return accHolderRepository.findById(id); }
-	
-//	/**
-//	 * @return the accountHolder 
-//	 */
-//	public static AccountHolder getAccountHolder(long id) {
-//		
-//		if(getAccountHolders().length <= 0) { return null; }
-//    	
-//		for(AccountHolder accountHolder: getAccountHolders()) {
-//    		if(accountHolder.getId() == id) { return accountHolder; }
-//    	}		
-////		throw new NotFoundException("Account Not Found");
-//		return null;
-//    }
-	
-	
-//	public static AccountHolder getAccountHolder(long id) 
-//			throws NotFoundException {
-//		
-//		if(getAccountHolders().length <= 0) { return null; }
-//    	
-//		for(AccountHolder accountHolder: getAccountHolders()) {
-//    		if(accountHolder.getId() == id) { return accountHolder; }
-//    	}
-//		
-//		throw new NotFoundException("Account Not Found");
-//    }
-	
-
+	public AccountHolder getAccountHolder(long id) throws NotFoundException { 
+		AccountHolder accountHolder = accHolderRepository.findById(id); 
+		if(accountHolder == null) { throw new NotFoundException("Account Holder Not Found"); }
+		return accountHolder; 
+	}
     	
 	/**
 	 * @param depositAmount
@@ -360,68 +346,27 @@ public class MeritBankService {
 		return secondBest;
 	}
 	
-//	/**
-//	 * @param id
-//	 * @return the CDOffering
-//	 */
-//	public static CDOffering getCDOffering(int id) {
-//		if(cdOfferings == null) { return null;}
-//		for(CDOffering cdOffering : cdOfferings) {
-//			if(cdOffering.getId() == id) { return cdOffering; }
-//		}
-//		return null;
-//	}
-	
 	/**
 	 * @param id
 	 * @return the CDOffering
 	 */
-	public CDOffering getCDOffering(int id) { return cdOfferingRepository.findById(id); }
-	
-//	public static CDOffering getSecondBestCDOffering(double depositAmount) {
-//		
-//		if (cdOfferings == null || MeritBank.cdOfferings.length <= 0) {
-//			System.out.println("Sorry there are no offerings at this time");
-//			return null;
-//		}
-//		CDOffering temp;
-//	      //sort the array
-//	      for (int i = 0; i < cdOfferings.length; i++) {
-//	         for (int j = i + 1; j < cdOfferings.length; j++) {
-//	            if (cdOfferings[i].getInterestRate() > cdOfferings[j].getInterestRate()) {
-//	               temp = cdOfferings[i];
-//	               cdOfferings[i] = cdOfferings[j];
-//	               cdOfferings[j] = temp;
-//	            }
-//	         }
-//	      }
-//	      
-//	      //return second largest element
-//	      return cdOfferings[cdOfferings.length - 2];
-//	}
-	
-//	/**
-//	 * @return the cdOfferings
-//	 */
-//	public static CDOffering[] getCDOfferings() { return cdOfferings; }
+	public CDOffering getCDOffering(int id) 
+			throws NotFoundException {
+		CDOffering cdOffering = cdOfferingRepository.findById(id);
+		if(cdOffering == null) { throw new NotFoundException("Offering Not Found"); }
+		return cdOffering; 
+	 }
 	
 	/**
 	 * @return the cdOfferings
 	 */
 	public List<CDOffering> getCDOfferings() { return cdOfferingRepository.findAll(); }
 	
-	
-//	/**
-//	 * @return the cdOfferings
-//	 */
-//	public static List<CDOffering> getCDOfferings() { return Arrays.asList(cdOfferings); }
-	
 	/**
 	 * @param cdOfferings the cdOfferings to set
 	 */
 	public static void setCDOfferings(CDOffering[] offerings) { MeritBankService.cdOfferings = offerings; }
-	
-	
+		
 //	public static CDOffering addCDOffering(CDOffering cdOffering) {
 //		if(cdOfferings == null) { cdOfferings = new CDOffering[0]; }
 //		CDOffering[] temp = new CDOffering[cdOfferings.length + 1];
@@ -434,12 +379,12 @@ public class MeritBankService {
 //		return cdOffering;
 //	}
 	
-	public CDOffering addCDOffering(CDOffering cdOffering) {
+	public CDOffering addCDOffering(CDOffering cdOffering) 
+			throws MissingDataException {
+		if(cdOffering == null) { throw new MissingDataException("Some data is missing or in the wrong format"); } 
 		return cdOfferingRepository.save(cdOffering);
 	}
-	
-	
-	
+		
 //	/**
 //	 * @param cdOfferings the cdOfferings to set
 //	 */
@@ -512,8 +457,6 @@ public class MeritBankService {
 	 */
 	public static AccountHolder[] sortAccountHolders() {
 		Arrays.sort(accountHolders);
-//		for(AccountHolder a : accountHolders)
-//			System.out.println(a.toString());
 		return accountHolders;
 	}	
 	
@@ -553,10 +496,53 @@ public class MeritBankService {
 //		return q;
 //	}
 	
+	public CheckingAccount addCheckingAccount(long customerId, CheckingAccount checkingAccount) 
+			 throws NotFoundException, ExceedsCombinedBalanceLimitException {
+		AccountHolder accountHolder = getAccountHolder(customerId); 
+		accountHolder.addCheckingAccount(checkingAccount);
+		return checkingAccountRepository.save(checkingAccount);
+	}
+	
+	public CheckingAccount[] getCheckingAccounts(long customerId)
+			 throws NotFoundException {
+		AccountHolder accountHolder = getAccountHolder(customerId);
+		return accountHolder.getCheckingAccounts();
+	}
+	
+	public SavingsAccount addSavingsAccount(long customerId, SavingsAccount savingsAccount) 
+			 throws NotFoundException, ExceedsCombinedBalanceLimitException {
+		AccountHolder accountHolder = getAccountHolder(customerId); 
+		accountHolder.addSavingsAccount(savingsAccount);
+		return savingsAccountRepository.save(savingsAccount);
+	}
+	
+	public SavingsAccount[] getSavingsAccounts(long customerId)
+			 throws NotFoundException {
+		AccountHolder accountHolder = getAccountHolder(customerId);
+		return accountHolder.getSavingsAccounts();
+	}
+	
+	public CDAccount addCDAccount(long customerId, CDAccount cdAccount) 
+			 throws NotFoundException, ExceedsFraudSuspicionLimitException {
+		AccountHolder accountHolder = getAccountHolder(customerId); 
+		CDOffering cdOffering = getCDOffering(cdAccount.getCdOffering().getId());
+		cdAccount.setTerm(cdOffering.getTerm());
+		cdAccount.setInterestRate(cdOffering.getInterestRate());
+		cdAccount.setCdOffering(cdOffering);	
+	//	accountHolder.addCDAccount(cdAccount); //Then it's not checked for suspicionLimit
+		accountHolder.addCDAccount(cdOffering, cdAccount.getBalance());
+		return cdAccountRepository.save(cdAccount);
+	}	
+	
+	public CDAccount[] getCDAccounts(long customerId)
+			 throws NotFoundException {
+		AccountHolder accountHolder = getAccountHolder(customerId);
+		return accountHolder.getCDAccounts();
+	}
+	
 	public static BankAccount getBankAccount(long accountID) {
 		for(AccountHolder accH : accountHolders){
 			for(CheckingAccount acc : accH.getCheckingAccounts()){
-//				System.out.println(acc.getAccountNumber());
 				if(accountID == acc.getAccountNumber()){ return acc; }
 			}
 			for(SavingsAccount acc : accH.getSavingsAccounts()){

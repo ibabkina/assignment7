@@ -59,7 +59,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
 		
 	@NotBlank
 	private String ssn; 
-	private static final double MAX_COMBINED_BALANCE = 250000.00;
+	private static final Double MAX_COMBINED_BALANCE = 250000.00;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
 //	, mappedBy="accountHolder" - doesn't work
@@ -113,7 +113,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
 		AccountHolder accHolder = new AccountHolder(args[0], args[1], args[2], args[3]);
 		return accHolder;
 	}
-	
+
 	public long getId() { return id; }
 
 	public void setId(long id) { this.id = id; }
@@ -170,36 +170,62 @@ public class AccountHolder implements Comparable<AccountHolder> {
 	 * @param openingBalance
 	 * @return the CheckingAccount
 	 */
-	public CheckingAccount addCheckingAccount(double openingBalance) {
+	public CheckingAccount addCheckingAccount(double openingBalance) 
+				throws ExceedsCombinedBalanceLimitException {
 		return addCheckingAccount(new CheckingAccount(openingBalance)); 
 	}
 
+//	/**
+//	 * @param checkingAccount
+//	 * @return the CheckingAccount
+//	 */
+//	public CheckingAccount addCheckingAccount(CheckingAccount checkingAccount) {
+//		try {
+//			double sum = this.getCheckingBalance() + this.getSavingsBalance(); 
+//			sum += checkingAccount.getBalance();
+//			
+//			if(sum > MAX_COMBINED_BALANCE) {
+//				throw new ExceedsCombinedBalanceLimitException(
+//						"You cannot add a checking account at this time. "
+//						+ "\nPlease wait until combined balance is under 250k!"); 
+//			}
+//			
+//			CheckingAccount[] temp = new CheckingAccount[checkingAccounts.length + 1];
+//			for (int i = 0 ; i < checkingAccounts.length; i++) {
+//				temp[i] = checkingAccounts[i];
+//			}
+//			temp[temp.length - 1] = checkingAccount;
+//			checkingAccounts = temp;
+//			
+//		}
+//		catch(ExceedsCombinedBalanceLimitException e){
+//			System.out.println(e) ;
+//		}
+//		return checkingAccount;		
+//	}	
+	
 	/**
 	 * @param checkingAccount
 	 * @return the CheckingAccount
 	 */
-	public CheckingAccount addCheckingAccount(CheckingAccount checkingAccount) {
-		try {
-			double sum = this.getCheckingBalance() + this.getSavingsBalance(); 
-			sum += checkingAccount.getBalance();
+	public CheckingAccount addCheckingAccount(CheckingAccount checkingAccount) 
+				throws ExceedsCombinedBalanceLimitException {
+	
+		double sum = this.getCheckingBalance() + this.getSavingsBalance(); 
+		sum += checkingAccount.getBalance();
 			
-			if(sum > MAX_COMBINED_BALANCE) {
-				throw new ExceedsCombinedBalanceLimitException(
-						"You cannot add a checking account at this time. "
-						+ "\nPlease wait until combined balance is under 250k!"); 
-			}
-			
-			CheckingAccount[] temp = new CheckingAccount[checkingAccounts.length + 1];
-			for (int i = 0 ; i < checkingAccounts.length; i++) {
-				temp[i] = checkingAccounts[i];
-			}
-			temp[temp.length - 1] = checkingAccount;
-			checkingAccounts = temp;
-			
+		if(sum > MAX_COMBINED_BALANCE) {
+			throw new ExceedsCombinedBalanceLimitException(
+					"You cannot add a checking account at this time. "
+					+ "\nPlease wait until combined balance is under 250k!"); 
 		}
-		catch(ExceedsCombinedBalanceLimitException e){
-			System.out.println(e) ;
+			
+		CheckingAccount[] temp = new CheckingAccount[checkingAccounts.length + 1];
+		for (int i = 0 ; i < checkingAccounts.length; i++) {
+			temp[i] = checkingAccounts[i];
 		}
+		temp[temp.length - 1] = checkingAccount;
+		checkingAccounts = temp;	
 		return checkingAccount;		
 	}		
 
@@ -217,7 +243,8 @@ public class AccountHolder implements Comparable<AccountHolder> {
 	 * @param openingBalance
 	 * @return the SavingsAccount
 	 */
-	SavingsAccount addSavingsAccount(double openingBalance) {
+	public SavingsAccount addSavingsAccount(double openingBalance)
+			throws ExceedsCombinedBalanceLimitException {
 		return addSavingsAccount(new SavingsAccount(openingBalance)); 
 	}
 	
@@ -225,28 +252,23 @@ public class AccountHolder implements Comparable<AccountHolder> {
 	 * @param savingsAccount
 	 * @return the SavingsAccount
 	 */
-	public SavingsAccount addSavingsAccount(SavingsAccount savingsAccount) {
-		try {
-			double sum = this.getCheckingBalance() + this.getSavingsBalance(); 
-			sum += savingsAccount.getBalance();
+	public SavingsAccount addSavingsAccount(SavingsAccount savingsAccount) 
+			throws ExceedsCombinedBalanceLimitException {
+		double sum = this.getCheckingBalance() + this.getSavingsBalance(); 
+		sum += savingsAccount.getBalance();
 			
-			if(sum > MAX_COMBINED_BALANCE) {
-				throw new ExceedsCombinedBalanceLimitException(
-						"You cannot add a checking account at this time. "
-						+ "\nPlease wait until combined balance is under 250k!"); 
+		if(sum > MAX_COMBINED_BALANCE) {
+			throw new ExceedsCombinedBalanceLimitException(
+					"You cannot add a checking account at this time. "
+					+ "\nPlease wait until combined balance is under 250k!"); 
 			}
 			
-			SavingsAccount[] temp = new SavingsAccount[savingsAccounts.length + 1];
-			for (int i = 0 ; i < savingsAccounts.length; i++) {
-				temp[i] = savingsAccounts[i];
-			}
-			temp[temp.length - 1] = savingsAccount;
-			savingsAccounts = temp;
-			
+		SavingsAccount[] temp = new SavingsAccount[savingsAccounts.length + 1];
+		for (int i = 0 ; i < savingsAccounts.length; i++) {
+			temp[i] = savingsAccounts[i];
 		}
-		catch(ExceedsCombinedBalanceLimitException e){
-			System.out.println(e) ;
-		}
+		temp[temp.length - 1] = savingsAccount;
+		savingsAccounts = temp;
 		return savingsAccount;			
 	}	
 	
@@ -262,8 +284,8 @@ public class AccountHolder implements Comparable<AccountHolder> {
 	 * @param offering
 	 * @return the CDAccount
 	 */
-	public CDAccount addCDAccount(CDOffering offering, double openingBalance) throws ExceedsFraudSuspicionLimitException { 
-		if (offering == null) { // || MeritBank.cdOfferings.length <= 0 ) { 
+	public CDAccount addCDAccount(CDOffering cdOffering, double openingBalance) throws ExceedsFraudSuspicionLimitException { 
+		if (cdOffering == null) { // || MeritBank.cdOfferings.length <= 0 ) { 
 			System.out.println("The CD account could not be created! No CD offerings are available.");
 			return null;
 			}
@@ -272,7 +294,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
 			throw new ExceedsFraudSuspicionLimitException("You cannot deposit > $1000 to CD Account"); 
 		}
 	
-		return addCDAccount(new CDAccount(offering, openingBalance)); 
+		return addCDAccount(new CDAccount(cdOffering, openingBalance)); 
 	}
 	
 	/**
