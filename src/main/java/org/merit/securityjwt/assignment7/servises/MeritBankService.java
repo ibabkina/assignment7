@@ -28,6 +28,7 @@ import org.merit.securityjwt.assignment7.repos.CDAccountRepository;
 import org.merit.securityjwt.assignment7.repos.CDOfferingRepository;
 import org.merit.securityjwt.assignment7.repos.CheckingAccountRepository;
 import org.merit.securityjwt.assignment7.repos.SavingsAccountRepository;
+import org.merit.securityjwt.assignment7.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MeritBankService {
 	
+	@Autowired UserRepository userRepository;
 	@Autowired AccountHolderRepository accHolderRepository;
 	@Autowired CDOfferingRepository cdOfferingRepository;
 	@Autowired CheckingAccountRepository checkingAccountRepository;

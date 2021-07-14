@@ -56,7 +56,9 @@ public class AccountHolder implements Comparable<AccountHolder> {
  * There no @JoinColumn annotation here. It's only needed on the owning side of the foreign key
  * relationship. Whoever owns the foreign key column gets the @JoinColumn annotation.
  */
-		
+	@OneToOne(cascade = CascadeType.ALL) 
+	private User user;
+	
 	@NotBlank
 	private String ssn; 
 	private static final Double MAX_COMBINED_BALANCE = 250000.00;
@@ -166,6 +168,14 @@ public class AccountHolder implements Comparable<AccountHolder> {
 		this.accountHolderContactDetails = accountHolderContactDetails;
 	}
 	
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	/**
 	 * @param openingBalance
 	 * @return the CheckingAccount
