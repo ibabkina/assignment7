@@ -42,7 +42,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class MeritBankService {
 	
-	@Autowired UserRepository userRepository;
 	@Autowired AccountHolderRepository accHolderRepository;
 	@Autowired CDOfferingRepository cdOfferingRepository;
 	@Autowired CheckingAccountRepository checkingAccountRepository;

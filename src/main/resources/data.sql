@@ -1,3 +1,3 @@
-INSERT INTO users(username, password, role)
-		VALUES('admin', 'admin', 'ADMIN')
+INSERT INTO users(user_id, username, password, role)
+		VALUES('0', 'admin', 'admin', 'ADMIN')
         ON DUPLICATE KEY UPDATE role = 'ADMIN';
