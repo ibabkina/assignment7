@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import org.merit.securityjwt.assignment7.controllers.MeritBankController;
 import org.merit.securityjwt.assignment7.exceptions.ExceedsCombinedBalanceLimitException;
 import org.merit.securityjwt.assignment7.exceptions.ExceedsFraudSuspicionLimitException;
 import org.merit.securityjwt.assignment7.exceptions.MissingDataException;
@@ -29,6 +30,8 @@ import org.merit.securityjwt.assignment7.repos.CDOfferingRepository;
 import org.merit.securityjwt.assignment7.repos.CheckingAccountRepository;
 import org.merit.securityjwt.assignment7.repos.SavingsAccountRepository;
 import org.merit.securityjwt.assignment7.repos.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +54,9 @@ public class MeritBankService {
 	private static CDOffering[] cdOfferings; 
 	private static long nextAccountNumber = 0;
 	private static final double MAX_TRANSACTION_AMOUNT = 1000.00;
+	
+	private final Logger log = LoggerFactory.getLogger(MeritBankService.class);
+	
 //	private static FraudQueue fraudQueue = new FraudQueue();
 
 //	static boolean readFromFile(String fileName) {

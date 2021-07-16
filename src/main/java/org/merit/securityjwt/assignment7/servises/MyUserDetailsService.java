@@ -14,22 +14,34 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.merit.securityjwt.assignment7.controllers.MeritBankController;
+import org.merit.securityjwt.assignment7.exceptions.AlreadyExistsException;
 import org.merit.securityjwt.assignment7.exceptions.MissingDataException;
 import org.merit.securityjwt.assignment7.exceptions.NotFoundException;
 import org.merit.securityjwt.assignment7.models.AccountHolder;
 import org.merit.securityjwt.assignment7.models.User;
 import org.merit.securityjwt.assignment7.repos.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import jdk.internal.org.jline.utils.Log;
 
 @Service
 public class MyUserDetailsService implements UserDetailsService {
 	
 	@Autowired private UserRepository userRepository; 
 	
+	private final Logger log = LoggerFactory.getLogger(MyUserDetailsService.class);
+	
 	@Override
 	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+		
+		if (userName == "" || userName.isEmpty()) {
+			throw new UsernameNotFoundException(String.format("User %s is invalid!", userName));
+	    }
 	
 		User user = getUser(userName);
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>(); 
@@ -38,9 +50,11 @@ public class MyUserDetailsService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);   
     }
 	
-	public User addUser(User user) throws MissingDataException {
+	public User addUser(User user) throws MissingDataException, AlreadyExistsException {
 		if(user == null) { throw new MissingDataException("Some data is missing or in the wrong format"); }
-		return userRepository.save(user);
+		if(userRepository.findByUsername(user.getUsername()) != null){ throw new AlreadyExistsException("This Username is not available"); }
+		userRepository.save(user);
+		return userRepository.findByUsername(user.getUsername());	
 	}
 	
 	/**

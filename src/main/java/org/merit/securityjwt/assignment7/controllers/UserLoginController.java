@@ -2,6 +2,7 @@ package org.merit.securityjwt.assignment7.controllers;
 
 import javax.validation.Valid;
 
+import org.merit.securityjwt.assignment7.exceptions.AlreadyExistsException;
 import org.merit.securityjwt.assignment7.exceptions.MissingDataException;
 import org.merit.securityjwt.assignment7.models.AuthenticationRequest;
 import org.merit.securityjwt.assignment7.models.AuthenticationResponse;
@@ -26,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserLoginController {
 	
-private final Logger log = LoggerFactory.getLogger(MeritBankController.class);
+private final Logger log = LoggerFactory.getLogger(UserLoginController.class);
 	
 	/*
 	 * In order to authenticate I need an authenticationManager so we create a member 
@@ -65,6 +66,7 @@ private final Logger log = LoggerFactory.getLogger(MeritBankController.class);
 		 * If auth is successful, the JWT is returned
 		 */
 		try {
+			log.info("auth username is: " + authenticationRequest.getUsername() + " auth password is: "+ authenticationRequest.getPassword());
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
 		} catch (BadCredentialsException e) {
@@ -93,7 +95,7 @@ private final Logger log = LoggerFactory.getLogger(MeritBankController.class);
 	
 	@PostMapping("/authenticate/createUser")
 	@ResponseStatus(HttpStatus.CREATED)
-	public User createUser(@RequestBody @Valid User user) throws MissingDataException {
+	public User createUser(@RequestBody @Valid User user) throws MissingDataException, AlreadyExistsException {
 		userDetailsService.addUser(user); 
 		return user;
 	}
