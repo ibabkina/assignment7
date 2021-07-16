@@ -42,12 +42,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class MeritBankService {
 	
-	@Autowired AccountHolderRepository accHolderRepository;
-	@Autowired CDOfferingRepository cdOfferingRepository;
-	@Autowired CheckingAccountRepository checkingAccountRepository;
-	@Autowired SavingsAccountRepository savingsAccountRepository;
-	@Autowired CDAccountRepository cdAccountRepository;
-	
+	@Autowired private AccountHolderRepository accHolderRepository;  			
+	@Autowired private CDOfferingRepository cdOfferingRepository;
+	@Autowired private CheckingAccountRepository checkingAccountRepository;
+	@Autowired private SavingsAccountRepository savingsAccountRepository;
+	@Autowired private CDAccountRepository cdAccountRepository;
 	private static AccountHolder[] accountHolders = new AccountHolder[0]; 
 	private static CDOffering[] cdOfferings; 
 	private static long nextAccountNumber = 0;

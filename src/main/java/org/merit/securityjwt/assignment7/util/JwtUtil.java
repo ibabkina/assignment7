@@ -22,7 +22,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Service
 public class JwtUtil {
 	
-	private String SECRET_KEY = "secret";
+	private String SECRET_KEY = "secret";  //"bjdfsdj@424jfd";
 	
 	/*
 	 * Pulls info from an existing token.
