@@ -14,19 +14,20 @@ public class User {
 	
 	@Id  // primary key for DB has to be initialized
 	@GeneratedValue(strategy=GenerationType.AUTO) 
-	private long userId;
+	private long id;
 	private String username;
 	private String password;
+	boolean active;
 	private String role;
 	
 	public User() {}
 	
-	public long getUserId() {
-		return userId;
+	public long getId() {
+		return id;
 	}
 
-	public void setUserId(long userId) {
-		this.userId = userId;
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public String getUsername() {
@@ -45,6 +46,14 @@ public class User {
 		this.password = password;
 	}
 
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
 	public String getRole() {
 		return role;
 	}
@@ -55,7 +64,7 @@ public class User {
 	@Override
 	public String toString() {
 		return "Name: " +  this.getUsername() + " "
-				+ "\nuser ID: " + this.getUserId() + " "
+				+ "\nuser ID: " + this.getId() + " "
 				+ "\nuser password: " + this.getPassword() + " "
 				+ "\nuser role: " + this.getRole(); 
 	}

@@ -37,6 +37,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 		http.csrf().disable().authorizeRequests()
 			.antMatchers("/authenticate").permitAll()
 			.antMatchers("/authenticate/createUser").hasAuthority("ADMIN")
+			.antMatchers("/accountHolders/**").hasAuthority("ADMIN")
 			.anyRequest().authenticated()
 			.and().sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

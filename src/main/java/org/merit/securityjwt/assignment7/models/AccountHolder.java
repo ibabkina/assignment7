@@ -50,13 +50,13 @@ public class AccountHolder implements Comparable<AccountHolder> {
 	
 	@NotNull
 	@OneToOne(cascade = CascadeType.ALL) //, mappedBy = "accountHolder")
-	private AccountHolderContactDetails accountHolderContactDetails;	
+	private AccountHolderContactDetails contact;	
 /* 
  * mappedBy designates the property/field in the entity that is the owner of the relationship. 
  * There no @JoinColumn annotation here. It's only needed on the owning side of the foreign key
  * relationship. Whoever owns the foreign key column gets the @JoinColumn annotation.
  */
-	@OneToOne(cascade = CascadeType.ALL) 
+	@OneToOne(cascade = CascadeType.MERGE) 
 	private User user;
 	
 	@NotBlank
@@ -162,10 +162,10 @@ public class AccountHolder implements Comparable<AccountHolder> {
 	 */
 	public void setSsn(String ssn) { this.ssn = ssn; }
 	
-	public AccountHolderContactDetails getAccountHolderContactDetails() { return accountHolderContactDetails;}
+	public AccountHolderContactDetails getContact() { return contact;}
 
-	public void setAccountHolderContactDetails(AccountHolderContactDetails accountHolderContactDetails) {
-		this.accountHolderContactDetails = accountHolderContactDetails;
+	public void setContact(AccountHolderContactDetails contact) {
+		this.contact = contact;
 	}
 	
 	public User getUser() {
@@ -400,7 +400,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
 	public String toString() {
 		return "Name: " +  this.getFirstName() + " " + this.getMiddleName() + " " + this.getLastName()
 				+ "\nSSN: " + this.getSsn() + "\n"
-				+ this.getAccountHolderContactDetails(); 
+				+ this.getContact(); 
 	}
 	
 	public String writeToString() {

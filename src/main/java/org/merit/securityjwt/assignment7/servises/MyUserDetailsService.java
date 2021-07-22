@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -58,17 +59,27 @@ public class MyUserDetailsService implements UserDetailsService {
 	}
 	
 	/**
-	 * @return the accountHolders 
+	 * @return the users 
 	 */
 	public List<User> getUsers(){ return userRepository.findAll(); }
 	
 	/**
-	 * @return the accountHolder 
+	 * @return the user
 	 */
 	public User getUser(String userName) throws UsernameNotFoundException { 
 		
 		User user = userRepository.findByUsername(userName); 
 		if(user == null) { throw new UsernameNotFoundException("User not Found"); }
+		return user; 
+	}
+	
+	/**
+	 * @return the user
+	 */
+	public User getUser(Long id) throws EntityNotFoundException { 
+		
+		User user = userRepository.findById(id).get(); //get() converts from Optional <User> to User
+		if(user == null) { throw new EntityNotFoundException("User not Found"); }
 		return user; 
 	}
 	

@@ -24,6 +24,7 @@ import org.merit.securityjwt.assignment7.models.CDAccount;
 import org.merit.securityjwt.assignment7.models.CDOffering;
 import org.merit.securityjwt.assignment7.models.CheckingAccount;
 import org.merit.securityjwt.assignment7.models.SavingsAccount;
+import org.merit.securityjwt.assignment7.models.User;
 import org.merit.securityjwt.assignment7.repos.AccountHolderRepository;
 import org.merit.securityjwt.assignment7.repos.CDAccountRepository;
 import org.merit.securityjwt.assignment7.repos.CDOfferingRepository;
@@ -45,6 +46,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MeritBankService {
 	
+	@Autowired private MyUserDetailsService myUserDetailsService;
 	@Autowired private AccountHolderRepository accHolderRepository;  			
 	@Autowired private CDOfferingRepository cdOfferingRepository;
 	@Autowired private CheckingAccountRepository checkingAccountRepository;
@@ -286,13 +288,15 @@ public class MeritBankService {
 	public void addAccountHolder(AccountHolder accountHolder) 
 					throws MissingDataException {
 			
-		if(accountHolder == null || accountHolder.getAccountHolderContactDetails() == null) { 
+		if(accountHolder == null || accountHolder.getContact() == null) { 
 				throw new MissingDataException("Some data is missing or in the wrong format"); }
+		log.info("Account Holder: " + accountHolder.toString());
 		accHolderRepository.save(accountHolder); // id only generates when saved to DB
 		long accHolderId = accountHolder.getId(); // how to handle if .getId() == null? Can it be null or 0?
-		accountHolder.getAccountHolderContactDetails().setAccountHolderId(accHolderId);
-		accHolderRepository.save(accountHolder); 
-		// Should this method return accHolderRepository.findById(id); 
+		accountHolder.getContact().setAccountHolderId(accHolderId);
+		User user = myUserDetailsService.getUser((accountHolder.getUser().getId()));
+		accountHolder.setUser(user);
+		accHolderRepository.save(accountHolder);  
 	}
 	
 //	/**
