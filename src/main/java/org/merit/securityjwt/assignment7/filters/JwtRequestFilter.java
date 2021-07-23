@@ -39,6 +39,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		
 		final String authorizationHeader = request.getHeader("Authorization");
 		
+//		Need to find the right place to throw 401
+//		if(authorizationHeader == null) { response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User can't be authenticated. Please provide a valid JWT"); }
+		
+		
 		String username = null;
 		String jwt = null;
 		
@@ -73,8 +77,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				 */
 				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 			}
-		
 		}
+		
 		/*
 		 * Now we need to continue the chain: pass the control to the next filter in the filter chain
 		 * 

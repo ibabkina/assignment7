@@ -82,5 +82,4 @@ public class MyUserDetailsService implements UserDetailsService {
 		if(user == null) { throw new EntityNotFoundException("User not Found"); }
 		return user; 
 	}
-	
 }

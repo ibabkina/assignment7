@@ -56,7 +56,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
  * There no @JoinColumn annotation here. It's only needed on the owning side of the foreign key
  * relationship. Whoever owns the foreign key column gets the @JoinColumn annotation.
  */
-	@OneToOne(cascade = CascadeType.MERGE) 
+	@OneToOne(cascade = CascadeType.MERGE) //Had to change from ALL to MERGE 
 	private User user;
 	
 	@NotBlank

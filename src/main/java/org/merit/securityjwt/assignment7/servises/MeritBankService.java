@@ -31,6 +31,7 @@ import org.merit.securityjwt.assignment7.repos.CDOfferingRepository;
 import org.merit.securityjwt.assignment7.repos.CheckingAccountRepository;
 import org.merit.securityjwt.assignment7.repos.SavingsAccountRepository;
 import org.merit.securityjwt.assignment7.repos.UserRepository;
+import org.merit.securityjwt.assignment7.util.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,11 +48,9 @@ import org.springframework.stereotype.Service;
 public class MeritBankService {
 	
 	@Autowired private MyUserDetailsService myUserDetailsService;
+	@Autowired private JwtUtil jwtUtil;
 	@Autowired private AccountHolderRepository accHolderRepository;  			
 	@Autowired private CDOfferingRepository cdOfferingRepository;
-	@Autowired private CheckingAccountRepository checkingAccountRepository;
-	@Autowired private SavingsAccountRepository savingsAccountRepository;
-	@Autowired private CDAccountRepository cdAccountRepository;
 	private static AccountHolder[] accountHolders = new AccountHolder[0]; 
 	private static CDOffering[] cdOfferings; 
 	private static long nextAccountNumber = 0;
@@ -318,7 +317,18 @@ public class MeritBankService {
 		if(accountHolder == null) { throw new NotFoundException("Account Holder Not Found"); }
 		return accountHolder; 
 	}
-    	
+	
+	// Throws invalid token or something?
+	public AccountHolder getAccountHolder(String auth) throws NotFoundException { 
+		String token = auth.substring(7);
+		String username = jwtUtil.extractUserName(token);
+		User user = myUserDetailsService.getUser(username);
+		AccountHolder accountHolder = accHolderRepository.findByUserId(user.getId()); 
+		log.info("AccountHolder is: " + accountHolder);
+		if(accountHolder == null) { throw new NotFoundException("Account Holder Not Found"); }
+		return accountHolder; 
+	}
+	 	
 	/**
 	 * @param depositAmount
 	 * @return the bestOffering
@@ -505,50 +515,6 @@ public class MeritBankService {
 //		FraudQueue q = new FraudQueue();
 //		return q;
 //	}
-	
-	public CheckingAccount addCheckingAccount(long customerId, CheckingAccount checkingAccount) 
-			 throws NotFoundException, ExceedsCombinedBalanceLimitException {
-		AccountHolder accountHolder = getAccountHolder(customerId); 
-		accountHolder.addCheckingAccount(checkingAccount);
-		return checkingAccountRepository.save(checkingAccount);
-	}
-	
-	public CheckingAccount[] getCheckingAccounts(long customerId)
-			 throws NotFoundException {
-		AccountHolder accountHolder = getAccountHolder(customerId);
-		return accountHolder.getCheckingAccounts();
-	}
-	
-	public SavingsAccount addSavingsAccount(long customerId, SavingsAccount savingsAccount) 
-			 throws NotFoundException, ExceedsCombinedBalanceLimitException {
-		AccountHolder accountHolder = getAccountHolder(customerId); 
-		accountHolder.addSavingsAccount(savingsAccount);
-		return savingsAccountRepository.save(savingsAccount);
-	}
-	
-	public SavingsAccount[] getSavingsAccounts(long customerId)
-			 throws NotFoundException {
-		AccountHolder accountHolder = getAccountHolder(customerId);
-		return accountHolder.getSavingsAccounts();
-	}
-	
-	public CDAccount addCDAccount(long customerId, CDAccount cdAccount) 
-			 throws NotFoundException, ExceedsFraudSuspicionLimitException {
-		AccountHolder accountHolder = getAccountHolder(customerId); 
-		CDOffering cdOffering = getCDOffering(cdAccount.getCdOffering().getId());
-		cdAccount.setTerm(cdOffering.getTerm());
-		cdAccount.setInterestRate(cdOffering.getInterestRate());
-		cdAccount.setCdOffering(cdOffering);	
-	//	accountHolder.addCDAccount(cdAccount); //Then it's not checked for suspicionLimit
-		accountHolder.addCDAccount(cdOffering, cdAccount.getBalance());
-		return cdAccountRepository.save(cdAccount);
-	}	
-	
-	public CDAccount[] getCDAccounts(long customerId)
-			 throws NotFoundException {
-		AccountHolder accountHolder = getAccountHolder(customerId);
-		return accountHolder.getCDAccounts();
-	}
 	
 	public static BankAccount getBankAccount(long accountID) {
 		for(AccountHolder accH : accountHolders){
