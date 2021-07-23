@@ -3,9 +3,12 @@ package org.merit.securityjwt.assignment7.controllers;
 import javax.validation.Valid;
 
 import org.merit.securityjwt.assignment7.exceptions.ExceedsCombinedBalanceLimitException;
+import org.merit.securityjwt.assignment7.exceptions.ExceedsFraudSuspicionLimitException;
 import org.merit.securityjwt.assignment7.exceptions.NotFoundException;
 import org.merit.securityjwt.assignment7.models.AccountHolder;
+import org.merit.securityjwt.assignment7.models.CDAccount;
 import org.merit.securityjwt.assignment7.models.CheckingAccount;
+import org.merit.securityjwt.assignment7.models.SavingsAccount;
 import org.merit.securityjwt.assignment7.servises.BankAccountService;
 import org.merit.securityjwt.assignment7.servises.MeritBankService;
 import org.slf4j.Logger;
@@ -29,7 +32,6 @@ private final Logger log = LoggerFactory.getLogger(MeController.class);
 	@Autowired private BankAccountService bankAccountService;
 	
 	
-	
 	@GetMapping(value = "/Me")
 	@ResponseStatus(HttpStatus.OK)
 	public AccountHolder getAccountHolderById(@RequestHeader("Authorization") String auth) throws NotFoundException {
@@ -42,9 +44,36 @@ private final Logger log = LoggerFactory.getLogger(MeController.class);
 			throws NotFoundException, ExceedsCombinedBalanceLimitException	{
 		return bankAccountService.addCheckingAccount(auth, checkingAccount);
 	}
-
 	
+	@GetMapping(value = "Me/checkingAccounts")
+	@ResponseStatus(HttpStatus.OK) 
+	public CheckingAccount[] getCheckingAccounts(@RequestHeader("Authorization") String auth) throws NotFoundException {
+		return bankAccountService.getCheckingAccounts(auth);
+	}
 	
+	@PostMapping(value = "/Me/savingsAccounts")
+	@ResponseStatus(HttpStatus.CREATED)
+	public SavingsAccount addSavingsAccount(@RequestHeader("Authorization") String auth, @RequestBody @Valid SavingsAccount savingsAccount)
+			throws NotFoundException, ExceedsCombinedBalanceLimitException	{
+		return bankAccountService.addSavingsAccount(auth, savingsAccount);
+	}
 	
+	@GetMapping(value = "Me/savingsAccounts")
+	@ResponseStatus(HttpStatus.OK) 
+	public SavingsAccount[] getSavingsAccounts(@RequestHeader("Authorization") String auth) throws NotFoundException {
+		return bankAccountService.getSavingsAccounts(auth);
+	}
 	
+	@PostMapping(value = "/Me/cdAccounts")
+	@ResponseStatus(HttpStatus.CREATED)
+	public CDAccount addCDAccount(@RequestHeader("Authorization") String auth, @RequestBody CDAccount cdAccount)
+			throws NotFoundException, ExceedsFraudSuspicionLimitException {
+		return bankAccountService.addCDAccount(auth, cdAccount);
+	}
+	
+	@GetMapping(value = "Me/cdAccounts")
+	@ResponseStatus(HttpStatus.OK) 
+	public CDAccount[] getCDAccounts(@RequestHeader("Authorization") String auth) throws NotFoundException {
+		return bankAccountService.getCDAccounts(auth);
+	}	
 }

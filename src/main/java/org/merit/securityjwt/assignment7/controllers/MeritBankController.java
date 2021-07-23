@@ -85,43 +85,4 @@ public class MeritBankController {
 	public CDOffering addCDOffering(@RequestBody @Valid CDOffering cdOffering) throws MissingDataException {
 		return meritBankService.addCDOffering(cdOffering); 
 	}
-	
-//	@PostMapping(value = "/accountHolders/{customerId}/checkingAccounts")
-//	@ResponseStatus(HttpStatus.CREATED)
-//	public CheckingAccount addCheckingAcc(@PathVariable long customerId, @RequestBody @Valid CheckingAccount checkingAccount) 
-//			throws NotFoundException, ExceedsCombinedBalanceLimitException	{
-//		return meritBankService.addCheckingAccount(customerId, checkingAccount);
-//	}
-//	
-//	@GetMapping(value = "/accountHolders/{customerId}/checkingAccounts")
-//	@ResponseStatus(HttpStatus.OK) 
-//	public CheckingAccount[] getCheckingAccounts(@PathVariable long customerId) throws NotFoundException {
-//		return meritBankService.getCheckingAccounts(customerId);
-//	}
-//	
-//	@PostMapping(value = "/accountHolders/{customerId}/savingsAccounts")
-//	@ResponseStatus(HttpStatus.CREATED)
-//	public SavingsAccount addSavingsAcc(@PathVariable long customerId, @RequestBody @Valid SavingsAccount savingsAccount) 
-//			throws NotFoundException, ExceedsCombinedBalanceLimitException	{
-//		return meritBankService.addSavingsAccount(customerId, savingsAccount);
-//	}
-//	
-//	@GetMapping(value = "/accountHolders/{customerId}/savingsAccounts")
-//	@ResponseStatus(HttpStatus.OK) 
-//	public SavingsAccount[] getSavingsAccounts(@PathVariable long customerId) throws NotFoundException {
-//		return meritBankService.getSavingsAccounts(customerId);
-//	}
-//	
-//	@PostMapping(value = "/accountHolders/{customerId}/cdAccounts")
-//	@ResponseStatus(HttpStatus.CREATED)
-//	public CDAccount addCDAcc(@PathVariable long customerId, @RequestBody CDAccount cdAccount) 
-//			throws NotFoundException, ExceedsFraudSuspicionLimitException {
-//		return meritBankService.addCDAccount(customerId, cdAccount);
-//	}	
-//			
-//	@GetMapping(value = "/accountHolders/{customerId}/cdAccounts")
-//	@ResponseStatus(HttpStatus.OK) 
-//	public CDAccount[] getCDAccounts(@PathVariable long customerId) throws NotFoundException {	
-//		return meritBankService.getCDAccounts(customerId);
-//	}
 }

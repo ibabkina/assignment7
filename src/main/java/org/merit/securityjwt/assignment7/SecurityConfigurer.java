@@ -38,6 +38,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 			.antMatchers("/authenticate").permitAll()
 			.antMatchers("/authenticate/createUser").hasAuthority("ADMIN")
 			.antMatchers("/accountHolders/**").hasAuthority("ADMIN")
+			.antMatchers("/cdOfferings/**").hasAuthority("ADMIN")
 			.antMatchers("/Me/**").hasAuthority("ACCOUNTHOLDER")
 			.anyRequest().authenticated()
 			.and().sessionManagement()

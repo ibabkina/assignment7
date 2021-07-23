@@ -46,9 +46,22 @@ public class BankAccountService {
 		return accountHolder.getCheckingAccounts();
 	}
 	
+	public CheckingAccount[] getCheckingAccounts(String auth)
+			 throws NotFoundException {
+		AccountHolder accountHolder = meritBankService.getAccountHolder(auth);
+		return accountHolder.getCheckingAccounts();
+	}
+	
 	public SavingsAccount addSavingsAccount(long customerId, SavingsAccount savingsAccount) 
 			 throws NotFoundException, ExceedsCombinedBalanceLimitException {
 		AccountHolder accountHolder = meritBankService.getAccountHolder(customerId); 
+		accountHolder.addSavingsAccount(savingsAccount);
+		return savingsAccountRepository.save(savingsAccount);
+	}
+	
+	public SavingsAccount addSavingsAccount(String auth, SavingsAccount savingsAccount) 
+			 throws NotFoundException, ExceedsCombinedBalanceLimitException {
+		AccountHolder accountHolder = meritBankService.getAccountHolder(auth); 
 		accountHolder.addSavingsAccount(savingsAccount);
 		return savingsAccountRepository.save(savingsAccount);
 	}
@@ -59,23 +72,37 @@ public class BankAccountService {
 		return accountHolder.getSavingsAccounts();
 	}
 	
+	public SavingsAccount[] getSavingsAccounts(String auth)
+			 throws NotFoundException {
+		AccountHolder accountHolder = meritBankService.getAccountHolder(auth);
+		return accountHolder.getSavingsAccounts();
+	}
+	
 	public CDAccount addCDAccount(long customerId, CDAccount cdAccount) 
 			 throws NotFoundException, ExceedsFraudSuspicionLimitException {
 		AccountHolder accountHolder = meritBankService.getAccountHolder(customerId); 
-		CDOffering cdOffering = meritBankService.getCDOffering(cdAccount.getCdOffering().getId());
-		cdAccount.setTerm(cdOffering.getTerm());
-		cdAccount.setInterestRate(cdOffering.getInterestRate());
-		cdAccount.setCdOffering(cdOffering);	
-	//	accountHolder.addCDAccount(cdAccount); //Then it's not checked for suspicionLimit
-		accountHolder.addCDAccount(cdOffering, cdAccount.getBalance());
-		return cdAccountRepository.save(cdAccount);
-	}	
+		CDOffering cdOffering = meritBankService.getCDOffering(cdAccount.getCdOffering().getId());	
+		log.info("CD account: " + cdAccount.toString());
+//		accountHolder.addCDAccount(cdAccount); //if call this method then it's not checked for suspicionLimit
+		
+		return cdAccountRepository.save(accountHolder.addCDAccount(cdOffering, cdAccount.getBalance()));
+	}
+	
+	public CDAccount addCDAccount(String auth, CDAccount cdAccount)
+			throws NotFoundException, ExceedsFraudSuspicionLimitException {
+		AccountHolder accountHolder = meritBankService.getAccountHolder(auth); 
+		return addCDAccount(accountHolder.getId(), cdAccount);
+	}
 	
 	public CDAccount[] getCDAccounts(long customerId)
 			 throws NotFoundException {
 		AccountHolder accountHolder = meritBankService.getAccountHolder(customerId);
 		return accountHolder.getCDAccounts();
 	}
-
-
+	
+	public CDAccount[] getCDAccounts(String auth) 
+			throws NotFoundException {
+		AccountHolder accountHolder = meritBankService.getAccountHolder(auth); 
+		return getCDAccounts(accountHolder.getId());
+	}
 }

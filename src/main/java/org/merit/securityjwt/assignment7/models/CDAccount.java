@@ -54,6 +54,7 @@ public class CDAccount extends BankAccount{
 	 */
 	public CDAccount(CDOffering offering, double openingBalance) {
 		super(openingBalance, offering.getInterestRate()); 
+		this.cdOffering = offering;
 		this.term = offering.getTerm();
 	}
 	
