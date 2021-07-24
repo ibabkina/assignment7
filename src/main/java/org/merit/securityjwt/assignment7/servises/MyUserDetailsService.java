@@ -15,7 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.merit.securityjwt.assignment7.controllers.MeritBankController;
+import org.merit.securityjwt.assignment7.controllers.AccountHolderController;
 import org.merit.securityjwt.assignment7.exceptions.AlreadyExistsException;
 import org.merit.securityjwt.assignment7.exceptions.MissingDataException;
 import org.merit.securityjwt.assignment7.exceptions.NotFoundException;

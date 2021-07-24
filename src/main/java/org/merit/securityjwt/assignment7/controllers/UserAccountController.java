@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class MeController {
+public class UserAccountController {
 
-private final Logger log = LoggerFactory.getLogger(MeController.class);
+private final Logger log = LoggerFactory.getLogger(UserAccountController.class);
 	
 	@Autowired private MeritBankService meritBankService;
 	@Autowired private BankAccountService bankAccountService;

@@ -39,9 +39,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class MeritBankController {
+public class AccountHolderController {
 	
-	private final Logger log = LoggerFactory.getLogger(MeritBankController.class);
+	private final Logger log = LoggerFactory.getLogger(AccountHolderController.class);
 	
 	@Autowired private MeritBankService meritBankService;
 		
@@ -66,23 +66,5 @@ public class MeritBankController {
 	@ResponseStatus(HttpStatus.OK)
 	public AccountHolder getAccountHolderById(@PathVariable long customerId) throws NotFoundException {
 		return meritBankService.getAccountHolder(customerId);
-	}
-	
-	@GetMapping(value = "/cdOfferings")
-	@ResponseStatus(HttpStatus.OK) //Redundant but can do if your team prefers
-	public List<CDOffering> getCDOfferings() {
-		return meritBankService.getCDOfferings();
-	}
-	
-	@GetMapping(value = "/cdOfferings/{cdOfferingId}")
-	@ResponseStatus(HttpStatus.OK) //Don't need to write this
-	public CDOffering getCDOfferingById(@PathVariable int cdOfferingId) throws NotFoundException {
-		return meritBankService.getCDOffering(cdOfferingId);
-	}
-	
-	@PostMapping(value = "/cdOfferings")
-	@ResponseStatus(HttpStatus.CREATED)
-	public CDOffering addCDOffering(@RequestBody @Valid CDOffering cdOffering) throws MissingDataException {
-		return meritBankService.addCDOffering(cdOffering); 
 	}
 }

@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-import org.merit.securityjwt.assignment7.controllers.MeritBankController;
+import org.merit.securityjwt.assignment7.controllers.AccountHolderController;
 import org.merit.securityjwt.assignment7.exceptions.ExceedsCombinedBalanceLimitException;
 import org.merit.securityjwt.assignment7.exceptions.ExceedsFraudSuspicionLimitException;
 import org.merit.securityjwt.assignment7.exceptions.MissingDataException;

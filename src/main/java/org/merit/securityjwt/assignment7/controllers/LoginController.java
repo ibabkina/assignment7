@@ -25,9 +25,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class UserLoginController {
+public class LoginController {
 	
-private final Logger log = LoggerFactory.getLogger(UserLoginController.class);
+	private final Logger log = LoggerFactory.getLogger(LoginController.class);
 	
 	/*
 	 * In order to authenticate I need an authenticationManager so we create a member 
@@ -90,13 +90,5 @@ private final Logger log = LoggerFactory.getLogger(UserLoginController.class);
 		 * to be new AuthenticationResponse of JWT
 		 */
 		return ResponseEntity.ok(new AuthenticationResponse(jwt));
-	
-	}
-	
-	@PostMapping("/authenticate/createUser")
-	@ResponseStatus(HttpStatus.CREATED)
-	public User createUser(@RequestBody @Valid User user) throws MissingDataException, AlreadyExistsException {
-		userDetailsService.addUser(user); 
-		return user;
 	}
 }
