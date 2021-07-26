@@ -1,4 +1,4 @@
-package org.merit.securityjwt.assignment7;
+package org.merit.securityjwt.assignment7.config;
 
 import org.merit.securityjwt.assignment7.filters.JwtRequestFilter;
 import org.merit.securityjwt.assignment7.servises.MyUserDetailsService;
@@ -35,6 +35,8 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable().authorizeRequests()
+			.antMatchers("/v2/api-docs", "/swagger-resources/configuration/ui", "/swagger-resources", "/swagger-resources/configuration/security", "/swagger-ui.html", "/webjars/**").permitAll()
+			.antMatchers("/v2/**").permitAll()
 			.antMatchers("/authenticate").permitAll()
 			.antMatchers("/authenticate/createUser").hasAuthority("ADMIN")
 			.antMatchers("/accountHolders/**").hasAuthority("ADMIN")
