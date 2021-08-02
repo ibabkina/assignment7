@@ -7,8 +7,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.merit.securityjwt.assignment7.controllers.LoginController;
 import org.merit.securityjwt.assignment7.servises.MyUserDetailsService;
 import org.merit.securityjwt.assignment7.util.JwtUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,8 +20,12 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import jdk.internal.org.jline.utils.Log;
+
 @Component // Needs to be in Spring's radar in order to autowire this
 public class JwtRequestFilter extends OncePerRequestFilter {
+	
+//	private final Logger log = LoggerFactory.getLogger(JwtRequestFilter.class);
 	
 	@Autowired // so Spring gives access to them
 	private MyUserDetailsService userDetailsService;
@@ -43,11 +50,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 //		if(authorizationHeader == null) { response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User can't be authenticated. Please provide a valid JWT"); }
 		
 		
+		
 		String username = null;
 		String jwt = null;
 		
+//		if(authorizationHeader == null) { Log.info("authorizationHeader is null"); }
+		
 		if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 			jwt = authorizationHeader.substring(7); // gives a substring after "Bearer space"
+//			Log.info("JWT in this session = " + jwt);
 			username = jwtUtil.extractUserName(jwt);
 		}
 		

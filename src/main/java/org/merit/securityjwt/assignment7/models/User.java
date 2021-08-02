@@ -20,7 +20,10 @@ public class User {
 	boolean active;
 	private String role;
 	
-	public User() {}
+	public User() {
+		this.active = true;
+		this.role = "ACCOUNTHOLDER";
+	}
 	
 	public long getId() {
 		return id;

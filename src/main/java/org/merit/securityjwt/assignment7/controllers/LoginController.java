@@ -18,6 +18,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +26,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000") //, allowedHeaders = "*", allowCredentials = "true")
+//@RequestMapping("/api")
 public class LoginController {
 	
 	private final Logger log = LoggerFactory.getLogger(LoginController.class);
@@ -45,8 +47,8 @@ public class LoginController {
 	@Autowired
 	private JwtUtil jwtTokenUtil;
 	
-	@RequestMapping({"/hello" })
-	public String hello() { return "<html><h2>Hello. Welcome to Merit Bank Assignment 7</h2></html>"; }
+//	@RequestMapping({"/hello" })
+//	public String hello() { return "<html><h2>Hello. Welcome to Merit Bank Assignment 7</h2></html>"; }
 
 	
 	/* Authentication endpoint that does authentication.
@@ -59,7 +61,7 @@ public class LoginController {
 	 */
 	@PostMapping("/authenticate")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
-		
+		log.info("In authenticate");
 		/*
 		 * UsernamePasswordAuthenticationToken is standard token that Spring MVC uses for 
 		 * userName and password.

@@ -28,6 +28,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,15 +40,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class AccountHolderController {
 	
 	private final Logger log = LoggerFactory.getLogger(AccountHolderController.class);
 	
 	@Autowired private MeritBankService meritBankService;
 		
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	@ResponseStatus(HttpStatus.OK) //Redundant but can do if your team prefers
-	public String greetMe() { return "<html><h2>Welcome to Merit Bank Assignment 7</h2></html>"; }
+//	@RequestMapping(value = "/", method = RequestMethod.GET)
+//	@ResponseStatus(HttpStatus.OK) //Redundant but can do if your team prefers
+//	public String greetMe() { return "<html><h2>Welcome to Merit Bank Assignment 7</h2></html>"; }
 
 	@PostMapping(value = "/accountHolders")
 	@ResponseStatus(HttpStatus.CREATED)
